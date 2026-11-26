@@ -1,17 +1,30 @@
+import random
+from collections import deque
+
 import pygame
+
+from settings import (
+    WIDTH, HEIGHT, PADDLE_WIDTH, PADDLE_HEIGHT, BALL_SIZE,
+    MAX_SPEED, SERVE_DELAY, CYAN, WHITE,
+)
+
+SCREEN_RECT = pygame.Rect(0, 0, WIDTH, HEIGHT)
 
 
 class Paddle:
-    def __init__(self, x, y, width=14, height=110, speed=7, color=(50, 220, 255)):
-        self.rect = pygame.Rect(x, y, width, height)
-        self.speed = speed
+    def init(self, x, color):
         self.color = color
+        self.rect = pygame.Rect(x, 0, PADDLE_WIDTH, PADDLE_HEIGHT)
+        self.reset()
 
-    def move(self, direction, screen_height):
-        """direction: -1 вверх, 1 вниз, 0 стоять."""
-        self.rect.y += direction * self.speed
-        self.rect.top = max(0, self.rect.top)
-        self.rect.bottom = min(screen_height, self.rect.bottom)
+    def reset(self):
+        self.rect.centery = HEIGHT // 2
 
-    def draw(self, surface):
-        pygame.draw.rect(surface, self.color, self.rect, border_radius=6)
+    def move(self, dy):
+        self.rect.y += dy
+        self.rect.clamp_ip(SCREEN_RECT)
+
+    def draw(self, screen):
+        r = self.rect
+        pygame.draw.rect(screen, self.color, r, border_radius=6)
+        pygame.draw.rect(screen, WHITE, (r.x + 3, r.y + 8, 3, r.height - 16), border_radius=2)
