@@ -12,7 +12,7 @@ SCREEN_RECT = pygame.Rect(0, 0, WIDTH, HEIGHT)
 
 
 class Paddle:
-    def init(self, x, color):
+    def __init__(self, x, color):
         self.color = color
         self.rect = pygame.Rect(x, 0, PADDLE_WIDTH, PADDLE_HEIGHT)
         self.reset()
@@ -30,7 +30,7 @@ class Paddle:
         pygame.draw.rect(screen, WHITE, (r.x + 3, r.y + 8, 3, r.height - 16), border_radius=2)
 
 class Ball:
-    def init(self):
+    def __init__(self):
         self.rect = pygame.Rect(0, 0, BALL_SIZE, BALL_SIZE)
         self.trail = deque(maxlen=8)
         self.trail_sprites = []
