@@ -1,6 +1,6 @@
 import pygame
 from settings import (
-    WIDTH, HEIGHT, FPS, WINNING_SCORE, PADDLE_WIDTH,
+    WIDTH, HEIGHT, FPS, WINNING_SCORE, PADDLE_WIDTH, PADDLE_SPEED,
     BG, GRID, LINE, CYAN, RED, CYAN_DARK, RED_DARK,
 )
 from entities import Paddle, Ball
@@ -16,7 +16,7 @@ def build_background():
     pygame.draw.rect(surf, LINE, frame, 2, border_radius=16)
     # Верх и низ рамки: слева голубая, справа красная
     for y in (10, HEIGHT - 11):
-        pygame.draw.line(surf, CYAN_DARK, (30, Y), (WIDTH // 2 - 20, y), 3)
+        pygame.draw.line(surf, CYAN_DARK, (30, y), (WIDTH // 2 - 20, y), 3)
         pygame.draw.line(surf, RED_DARK, (WIDTH // 2 + 20, y), (WIDTH - 30, y), 3)
     for y in range(28, HEIGHT - 20, 28):
         pygame.draw.rect(surf, LINE, (WIDTH // 2 - 2, y, 4, 14), border_radius=2)
@@ -68,8 +68,10 @@ class PingPongGame:
         ball = self.ball
         if ball.rect.colliderect(self.left.rect) and ball.vx < 0:
             ball.bounce(self.left, 1)
+            self.left.shrink()
         elif ball.rect.colliderect(self.right.rect) and ball.vx > 0:
             ball.bounce(self.right, -1)
+            self.right.shrink()
         if ball.rect.left < 0:
             self.right_score += 1
             ball.reset(direction=-1)
