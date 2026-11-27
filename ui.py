@@ -9,7 +9,7 @@ def dim(color, factor):
 
 
 class UI:
-    def init(self):
+    def __init__(self):
         self.font_big = pygame.font.Font(None, 96)
         self.font_title = pygame.font.Font(None, 68)
         self.font_title.set_bold(True)
