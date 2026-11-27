@@ -4,6 +4,7 @@ from settings import (
     BG, GRID, LINE, CYAN, RED, CYAN_DARK, RED_DARK,
 )
 from entities import Paddle, Ball
+from controls import Controls
 def build_background():
     surf = pygame.Surface((WIDTH, HEIGHT))
     surf.fill(BG)
@@ -31,6 +32,7 @@ class PingPongGame:
         pygame.display.set_caption("Neon Ping Pong")
         self.clock = pygame.time.Clock()
         self.background = build_background()
+        self.controls = Controls()
         self.left = Paddle(40, CYAN)
         self.right = Paddle(WIDTH - 40 - PADDLE_WIDTH, RED)
         self.ball = Ball()
@@ -49,11 +51,19 @@ class PingPongGame:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                self.running = False
+            elif event.type == pygame.KEYDOWN:
+                self.controls.key_down(event)
+                if event.key == pygame.K_ESCAPE:
+                    self.running = False
+            elif event.type == pygame.KEYUP:
+                self.controls.key_up(event)
+            elif event.type == pygame.WINDOWFOCUSLOST:
+                self.controls.clear()
     def update(self):
         if self.winner:
             return
+        self.left.move(self.controls.left() * PADDLE_SPEED)
+        self.right.move(self.controls.right() * PADDLE_SPEED)
         self.ball.update()
         ball = self.ball
         if ball.rect.colliderect(self.left.rect) and ball.vx < 0:
