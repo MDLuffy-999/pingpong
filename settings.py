@@ -25,3 +25,7 @@ BTN = (26, 36, 62)
 BTN_HOVER = (40, 58, 94)
 CYAN_DARK = (27, 121, 140)
 RED_DARK = (140, 46, 57)
+
+# Уменьшение ракетки
+PADDLE_SHRINK_STEP = 8
+MIN_PADDLE_HEIGHT = 30
