@@ -1,5 +1,5 @@
 import pygame
-from settings import WIDTH, HEIGHT, WHITE, CYAN, RED, YELLOW, MUTED
+from settings import WIDTH, HEIGHT, WHITE, CYAN, RED, YELLOW, MUTED, DIFFS, MODE_BOT
 
 CX = WIDTH // 2
 
@@ -9,7 +9,7 @@ def dim(color, factor):
 
 
 class UI:
-    def init(self):
+    def __init__(self):
         self.font_big = pygame.font.Font(None, 96)
         self.font_title = pygame.font.Font(None, 68)
         self.font_title.set_bold(True)
@@ -28,11 +28,19 @@ class UI:
     def draw_hud(self, screen, game):
         self.text(screen, str(game.left_score), self.font_big, CYAN, (CX - 90, 75), True)
         self.text(screen, str(game.right_score), self.font_big, RED, (CX + 90, 75), True)
-        self.text(screen, "ИГРОК 1", self.font_small, MUTED, (CX - 90, 130))
-        self.text(screen, "ИГРОК 2", self.font_small, MUTED, (CX + 90, 130))
-        self.text(screen, "W / S", self.font_small, CYAN, (80, HEIGHT - 38))
-        self.text(screen, "ВВЕРХ / ВНИЗ", self.font_small, RED, (WIDTH - 90, HEIGHT - 38))
-        self.text(screen, "ESC = ПАУЗА", self.font_small, MUTED, (CX, HEIGHT - 38))
+        if game.mode == MODE_BOT:
+            left_label, right_label = "ТЫ", "БОТ " + DIFFS[game.bot.difficulty]["name"]
+        else:
+            left_label, right_label = "ИГРОК 1", "ИГРОК 2"
+        self.text(screen, left_label, self.font_small, MUTED, (CX - 90, 130))
+        self.text(screen, right_label, self.font_small, MUTED, (CX + 90, 130))
+        if game.mode == MODE_BOT:
+            self.text(screen, "W / S или ВВЕРХ / ВНИЗ или МЫШЬ", self.font_small, CYAN, (200, HEIGHT - 38))
+            self.text(screen, "ESC = ПАУЗА", self.font_small, MUTED, (WIDTH - 90, HEIGHT - 38))
+        else:
+            self.text(screen, "W / S", self.font_small, CYAN, (80, HEIGHT - 38))
+            self.text(screen, "ВВЕРХ / ВНИЗ", self.font_small, RED, (WIDTH - 90, HEIGHT - 38))
+            self.text(screen, "ESC = ПАУЗА", self.font_small, MUTED, (CX, HEIGHT - 38))
         if game.ball.serve_timer > 0:
             self.text(screen, "ПРИГОТОВЬТЕСЬ", self.font, YELLOW, (CX, HEIGHT // 2 - 60))
 
@@ -42,7 +50,10 @@ class UI:
 
     def draw_win(self, screen, game):
         left_won = game.winner == "left"
-        title = "ИГРОК 1 ПОБЕДИЛ!" if left_won else "ИГРОК 2 ПОБЕДИЛ!"
+        if game.mode == MODE_BOT:
+            title = "ТЫ ПОБЕДИЛ!" if left_won else "БОТ ВЫЙГРАЛ!"
+        else:
+            title = "ИГРОК 1 ПОБЕДИЛ!" if left_won else "ИГРОК 2 ПОБЕДИЛ!"
         color = CYAN if left_won else RED
         self.text(screen, title, self.font_title, color, (CX, HEIGHT // 2 - 25), True)
         self.text(screen, "НАЖМИТЕ R ДЛЯ НОВОЙ ИГРЫ", self.font_small, WHITE, (CX, HEIGHT // 2 + 25))
