@@ -29,3 +29,13 @@ RED_DARK = (140, 46, 57)
 # Уменьшение ракетки
 PADDLE_SHRINK_STEP = 5
 MIN_PADDLE_HEIGHT = 30
+
+# Бот и мышь
+MOUSE_SPEED = 14
+MODE_BOT = "bot"
+MODE_PVP = "pvp"
+DIFFS = [
+    {"name": "Легкий", "speed": 4.0, "error": 50, "miss": 0.40, "predict": False},
+    {"name": "Средний", "speed": 5.6, "error": 30, "miss": 0.22, "predict": False},
+    {"name": "Тяжелый", "speed": 7.0, "error": 15, "miss": 0.10, "predict": True},
+]
