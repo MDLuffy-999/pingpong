@@ -6,6 +6,7 @@ import pygame
 from settings import (
     WIDTH, HEIGHT, PADDLE_WIDTH, PADDLE_HEIGHT, BALL_SIZE,
     MAX_SPEED, SERVE_DELAY, CYAN, WHITE,
+    PADDLE_SHRINK_STEP, MIN_PADDLE_HEIGHT,
 )
 
 SCREEN_RECT = pygame.Rect(0, 0, WIDTH, HEIGHT)
@@ -18,8 +19,14 @@ class Paddle:
         self.reset()
 
     def reset(self):
+        self.rect.height = PADDLE_HEIGHT
         self.rect.centery = HEIGHT // 2
 
+    def shrink(self):
+        center = self.rect.centery
+        self.rect.height = max(MIN_PADDLE_HEIGHT, self.rect.height - PADDLE_SHRINK_STEP)
+        self.rect.centery = center
+        
     def move(self, dy):
         self.rect.y += dy
         self.rect.clamp_ip(SCREEN_RECT)
