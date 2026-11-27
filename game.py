@@ -5,6 +5,7 @@ from settings import (
 )
 from entities import Paddle, Ball
 from controls import Controls
+from ui import UI
 def build_background():
     surf = pygame.Surface((WIDTH, HEIGHT))
     surf.fill(BG)
@@ -33,17 +34,20 @@ class PingPongGame:
         self.clock = pygame.time.Clock()
         self.background = build_background()
         self.controls = Controls()
+        self.ui = UI()
         self.left = Paddle(40, CYAN)
         self.right = Paddle(WIDTH - 40 - PADDLE_WIDTH, RED)
         self.ball = Ball()
         self.left_score = 0
         self.right_score = 0
         self.winner = None
+        self.paused = False
         self.running = True
     def reset_match(self):
         self.left_score = 0
         self.right_score = 0
         self.winner = None
+        self.paused = False
         self.left.reset()
         self.right.reset()
         self.ball.reset()
@@ -53,14 +57,20 @@ class PingPongGame:
                 self.running = False
             elif event.type == pygame.KEYDOWN:
                 self.controls.key_down(event)
-                if event.key == pygame.K_ESCAPE:
-                    self.running = False
+                if (event.key in (pygame.K_ESCAPE, pygame.K_p)
+                        or event.scancode in (pygame.KSCAN_ESCAPE, pygame.KSCAN_P)):
+                    if not self.winner:
+                        self.paused = not self.paused
+                elif event.key == pygame.K_r or event.scancode == pygame.KSCAN_R:
+                    self.reset_match()
             elif event.type == pygame.KEYUP:
                 self.controls.key_up(event)
             elif event.type == pygame.WINDOWFOCUSLOST:
                 self.controls.clear()
+                if not self.winner:
+                    self.paused = True
     def update(self):
-        if self.winner:
+        if self.winner or self.paused:
             return
         self.left.move(self.controls.left() * PADDLE_SPEED)
         self.right.move(self.controls.right() * PADDLE_SPEED)
@@ -87,6 +97,11 @@ class PingPongGame:
         self.left.draw(self.screen)
         self.right.draw(self.screen)
         self.ball.draw(self.screen)
+        self.ui.draw_hud(self.screen, self)
+        if self.paused:
+            self.ui.draw_pause(self.screen)
+        elif self.winner:
+            self.ui.draw_win(self.screen, self)
         pygame.display.flip()
     def run(self):
         while self.running:
