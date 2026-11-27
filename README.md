@@ -34,6 +34,25 @@ Pong, написанная на Python с использованием Pygame. �
 
 ## 🚀 Установка и запуск
 
+
+### Windows
+
+1.  Установите Python 3:
+    [python.org/downloads](https://www.python.org/downloads/)
+
+2.  Откройте терминал в папке проекта.
+
+3.  Установите зависимости:
+
+    ``` bash
+    python -m pip install -r requirements.txt
+    ```
+
+4.  Запустите игру:
+
+    ``` bash
+    python main.py
+    ```
 ### macOS
 
 1.  Установите Python 3, если он ещё не установлен:
@@ -60,25 +79,6 @@ Pong, написанная на Python с использованием Pygame. �
     ```
 
 6.  Запустите игру:
-
-    ``` bash
-    python main.py
-    ```
-
-### Windows
-
-1.  Установите Python 3:
-    [python.org/downloads](https://www.python.org/downloads/)
-
-2.  Откройте терминал в папке проекта.
-
-3.  Установите зависимости:
-
-    ``` bash
-    python -m pip install -r requirements.txt
-    ```
-
-4.  Запустите игру:
 
     ``` bash
     python main.py
