@@ -63,7 +63,7 @@ class PingPongGame:
         if direction != 0:
             self.mouse_control = False
         if self.mode == MODE_BOT and self.mouse_control:
-            diff == pygame.mouse.get_pos()[1] - self.left.rect.centery
+            diff = pygame.mouse.get_pos()[1] - self.left.rect.centery
             if abs(diff) > 2:
                 self.left.move(max(-MOUSE_SPEED, min(MOUSE_SPEED, diff)))
         else:
@@ -108,10 +108,10 @@ class PingPongGame:
             self.right.shrink()
         if ball.rect.left < 0:
             self.right_score += 1
-            ball.serve(direction=-1)
+            self.serve(direction=-1)
         elif ball.rect.right > WIDTH:
             self.left_score += 1
-            ball.serve(direction=1)
+            self.serve(direction=1)
         if self.left_score >= WINNING_SCORE:
             self.winner = "left"
         elif self.right_score >= WINNING_SCORE:
