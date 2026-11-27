@@ -1,10 +1,11 @@
 import pygame
 from settings import (
-    WIDTH, HEIGHT, FPS, WINNING_SCORE, PADDLE_WIDTH, PADDLE_SPEED,
-    BG, GRID, LINE, CYAN, RED, CYAN_DARK, RED_DARK,
+    WIDTH, HEIGHT, FPS, WINNING_SCORE, PADDLE_WIDTH, PADDLE_SPEED, MOUSE_SPEED,
+    BG, GRID, LINE, CYAN, RED, CYAN_DARK, RED_DARK, MODE_BOT, MODE_PVP,
 )
 from entities import Paddle, Ball
 from controls import Controls
+from bot import Bot
 from ui import UI
 def build_background():
     surf = pygame.Surface((WIDTH, HEIGHT))
@@ -38,11 +39,17 @@ class PingPongGame:
         self.left = Paddle(40, CYAN)
         self.right = Paddle(WIDTH - 40 - PADDLE_WIDTH, RED)
         self.ball = Ball()
+        self.bot = Bot(self.right, self.ball)
+        self.mode = MODE_BOT
+        self.mouse_control = False
         self.left_score = 0
         self.right_score = 0
         self.winner = None
         self.paused = False
         self.running = True
+    def serve(self, direction=None):
+        self.ball.reset(direction)
+        self.bot.error = self.bot.new_error()
     def reset_match(self):
         self.left_score = 0
         self.right_score = 0
@@ -50,7 +57,21 @@ class PingPongGame:
         self.paused = False
         self.left.reset()
         self.right.reset()
-        self.ball.reset()
+        self.serve()
+    def move_paddles(self):
+        direction = self.controls.left(arrows_too=(self.mode == MODE_BOT))
+        if direction != 0:
+            self.mouse_control = False
+        if self.mode == MODE_BOT and self.mouse_control:
+            diff = pygame.mouse.get_pos()[1] - self.left.rect.centery
+            if abs(diff) > 2:
+                self.left.move(max(-MOUSE_SPEED, min(MOUSE_SPEED, diff)))
+        else:
+            self.left.move(direction * PADDLE_SPEED)
+        if self.mode == MODE_PVP:
+            self.right.move(self.controls.right() * PADDLE_SPEED)
+        else:
+            self.bot.update()
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -69,25 +90,28 @@ class PingPongGame:
                 self.controls.clear()
                 if not self.winner:
                     self.paused = True
+            elif event.type == pygame.MOUSEMOTION:
+                if self.mode == MODE_BOT and not self.paused and not self.winner:
+                    self.mouse_control = True
     def update(self):
         if self.winner or self.paused:
             return
-        self.left.move(self.controls.left() * PADDLE_SPEED)
-        self.right.move(self.controls.right() * PADDLE_SPEED)
+        self.move_paddles()
         self.ball.update()
         ball = self.ball
         if ball.rect.colliderect(self.left.rect) and ball.vx < 0:
             ball.bounce(self.left, 1)
             self.left.shrink()
+            self.bot.error = self.bot.new_error()
         elif ball.rect.colliderect(self.right.rect) and ball.vx > 0:
             ball.bounce(self.right, -1)
             self.right.shrink()
         if ball.rect.left < 0:
             self.right_score += 1
-            ball.reset(direction=-1)
+            self.serve(direction=-1)
         elif ball.rect.right > WIDTH:
             self.left_score += 1
-            ball.reset(direction=1)
+            self.serve(direction=1)
         if self.left_score >= WINNING_SCORE:
             self.winner = "left"
         elif self.right_score >= WINNING_SCORE:
