@@ -26,6 +26,12 @@ class Paddle:
         center = self.rect.centery
         self.rect.height = max(MIN_PADDLE_HEIGHT, self.rect.height - PADDLE_SHRINK_STEP)
         self.rect.centery = center
+
+    def restore_size(self):
+        center = self.rect.centery
+        self.rect.height = PADDLE_HEIGHT
+        self.rect.centery = center
+        self.rect.clamp_ip(SCREEN_RECT)
         
     def move(self, dy):
         self.rect.y += dy
