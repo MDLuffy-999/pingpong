@@ -27,7 +27,7 @@ CYAN_DARK = (27, 121, 140)
 RED_DARK = (140, 46, 57)
 
 # Уменьшение ракетки
-PADDLE_SHRINK_STEP = 5
+PADDLE_SHRINK_STEP = 6
 MIN_PADDLE_HEIGHT = 30
 
 # Бот и мышь
