@@ -52,6 +52,8 @@ class PingPongGame:
         self.paused = False
         self.running = True
     def serve(self, direction=None):
+        self.left.restore_size()
+        self.right.restore_size()
         self.ball.reset(direction)
         self.bot.error = self.bot.new_error()
     def reset_match(self):
