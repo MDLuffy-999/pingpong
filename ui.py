@@ -112,7 +112,7 @@ class UI:
         self.button(screen, "ПРОДОЛЖИТЬ", PAUSE_RESUME, mouse, CYAN)
         self.button(screen, "В МЕНЮ", PAUSE_MENU, mouse, RED)
 
-   def draw_win(self, screen, game):
+    def draw_win(self, screen, game):
         left_won = game.winner == "left"
         if game.mode == MODE_BOT:
             title = "ВЫ ПОБЕДИЛИ!" if left_won else "БОТ ПОБЕДИЛ!"
